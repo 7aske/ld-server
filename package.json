@@ -1,0 +1,30 @@
+{
+	"name": "ld-server",
+	"version": "1.0.0",
+	"description": "LD server",
+	"main": "server.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/7aske/ld-server.git"
+	},
+	"keywords": [
+		"ld",
+		"server"
+	],
+	"author": "Nikola Tasic",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/7aske/ld-server/issues"
+	},
+	"homepage": "https://github.com/7aske/ld-server#readme",
+	"dependencies": {
+		"body-parser": "^1.18.3",
+		"express": "^4.16.3",
+		"mongoose": "^5.2.10",
+		"morgan": "^1.9.0",
+		"shortid": "^2.2.13"
+	}
+}
