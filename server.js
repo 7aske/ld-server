@@ -15,6 +15,12 @@ mongoose.connect(uri);
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(function(req, res, next) {
+	res.header('Access-Control-Allow-Origin', '*');
+	res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+	next();
+});
+
 app.use('/', router);
 
 router.get('/employees', (req, res) => {
@@ -25,26 +31,40 @@ router.get('/employees', (req, res) => {
 		.catch(err => console.log(err));
 });
 router.get('/config', (req, res) => {
-	Config.findById({ id: 0 }).then(result => {
+	Config.findOne({ id: 0 }).then(result => {
 		res.send(result);
 	});
 });
 router.post('/config/update', (req, res) => {
 	const config = req.body.config;
-	Config.findByIdAndUpdate({ id: 0 }, config)
+	Config.findOneAndUpdate({ id: 0 }, config)
 		.then(result => {
 			res.send(result);
 		})
 		.catch(err => console.log(err));
 });
 router.post('/employees/delete', (req, res) => {
-	const id = req.body.id;
-	Employee.findOneAndRemove({ _id: id }).then(result => {
-		res.send(result);
+	const employees = req.body.employees;
+	employees.forEach((employee, i) => {
+		Employee.findOneAndRemove({ _id: id })
+			.then(result => {
+				Employee.find({})
+					.then(result => {
+						if (i == employees.length - 1) {
+							Employee.find({})
+								.then(result => {
+									res.send(result);
+								})
+								.catch(err => console.log(err));
+						}
+					})
+					.catch(err => console.log(err));
+			})
+			.catch(err => console.log(err));
 	});
 });
 router.post('/employees/save', (req, res) => {
-	const employees = req.body.employees;
+	const employees = req.body.save;
 	console.log(employees);
 	employees.forEach((e, i, array) => {
 		const employee = new Employee(e);
@@ -53,7 +73,7 @@ router.post('/employees/save', (req, res) => {
 				if (result.length == 0) {
 					employee
 						.save()
-						.then(res => {
+						.then(r => {
 							if (i == array.length - 1) {
 								Employee.find({})
 									.then(result => {
