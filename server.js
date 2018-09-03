@@ -9,8 +9,6 @@ const user = 'admin';
 const pass = 'admin';
 const uri = `mongodb+srv://${user}:${pass}@cluster0-p6e4t.mongodb.net/company0`;
 const Employee = require('./models/Employee.js');
-const Config = require('./models/Config.js');
-
 mongoose.connect(uri);
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -20,24 +18,9 @@ app.use(function(req, res, next) {
 	res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
 	next();
 });
-
 app.use('/', router);
-
 router.get('/employees', (req, res) => {
 	Employee.find({})
-		.then(result => {
-			res.send(result);
-		})
-		.catch(err => console.log(err));
-});
-router.get('/config', (req, res) => {
-	Config.findOne({ id: 0 }).then(result => {
-		res.send(result);
-	});
-});
-router.post('/config/update', (req, res) => {
-	const config = req.body.config;
-	Config.findOneAndUpdate({ id: 0 }, config)
 		.then(result => {
 			res.send(result);
 		})
@@ -104,5 +87,4 @@ router.post('/employees/save', (req, res) => {
 			.catch(err => console.log(err));
 	});
 });
-
 app.listen(PORT, () => console.log(`Server running on ${PORT}.`));
